@@ -20,7 +20,7 @@ CLI em TypeScript que analisa o diff em staging e usa IA para sugerir mensagens 
 
 ## Sobre
 
-Escrever boas mensagens de commit de forma consistente é uma tarefa repetitiva. O **OUR COMMIT** automatiza essa parte sem tirar o controle do desenvolvedor.
+Escrever boas mensagens de commit de forma consistente é uma tarefa repetitiva e por vezes desafiadora até na escolha dos títulos e descrição. Pensando nisso desenvolvi como projeto de estudo e também ferramenta de uso no dia a dia o **OUR COMMIT** que automatiza essa parte sem tirar o controle do dev.
 
 A ferramenta analisa somente as alterações que já estão em **staging** e gera uma sugestão de mensagem baseada exatamente no conteúdo preparado para o próximo commit.
 
@@ -30,7 +30,7 @@ Por padrão, o OUR COMMIT **apenas exibe a sugestão**. O commit só é criado q
 
 ## Como funciona
 
-```text
+```
 git add <arquivos>
         │
         ▼
@@ -124,7 +124,7 @@ Você precisa configurar **apenas uma chave de API** para utilizar o respectivo 
 
 O provedor padrão é definido por `OUR_COMMIT_PROVIDER`, mas também pode ser escolhido diretamente pelas flags `--anthropic` e `--openai`.
 
-> Nunca versione seu arquivo `.env`. Ele já está incluído no `.gitignore`.
+> E vai uma regra de boa prática que o dev que vos fala teve que aprender na raça, NUNCA versione seu arquivo `.env`. Ele guarda suas credenciais/keys (chaves) privadas e por questões de segurança do seu projeto não deve ser colocado no github. E já está incluído no `.gitignore`.
 
 ---
 
@@ -218,7 +218,7 @@ O pacote já define o executável:
 our-commit
 ```
 
-Depois de compilar o projeto, durante o desenvolvimento você pode disponibilizá-lo globalmente com:
+Depois de compilar o projeto, durante o desenvolvimento você pode disponibilizar globalmente com:
 
 ```bash
 npm link
@@ -236,7 +236,7 @@ Ou:
 our-commit --apply
 ```
 
-Para remover o link global posteriormente:
+“E para remover o link global posteriormente, como faço?”:
 
 ```bash
 npm unlink -g our-commit
@@ -387,7 +387,7 @@ Diffs extensos são truncados para reduzir o envio desnecessário de conteúdo e
 
 ## Contribuição
 
-Contribuições são bem-vindas.
+Contribuições são muito bem-vindas e ajudam demais no desenvolvimento mútuo. Deixe a sua!
 
 1. Faça um fork do projeto.
 2. Crie uma branch para sua alteração.
