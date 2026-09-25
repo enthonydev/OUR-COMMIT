@@ -20,7 +20,7 @@ CLI em TypeScript que analisa o diff em staging e usa IA para sugerir mensagens 
 
 ## Sobre
 
-Escrever boas mensagens de commit de forma consistente é uma tarefa repetitiva e por vezes desafiadora até na escolha dos títulos e descrição. Pensando nisso desenvolvi como projeto de estudo e também ferramenta de uso no dia a dia o **OUR COMMIT** que automatiza essa parte sem tirar o controle do dev.
+Escrever boas mensagens de commit de forma consistente é uma tarefa repetitiva e por vezes desafiadora até na escolha dos títulos e descrição. Pensando nisso desenvolvi como projeto de estudo e também ferramenta de uso no dia a dia o **OUR COMMIT**, que automatiza essa parte sem tirar o controle do dev.
 
 A ferramenta analisa somente as alterações que já estão em **staging** e gera uma sugestão de mensagem baseada exatamente no conteúdo preparado para o próximo commit.
 
