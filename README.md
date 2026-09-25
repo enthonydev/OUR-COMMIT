@@ -1,241 +1,425 @@
-<h1 align="center">OUR COMMIT</h1> <p align="center">
-<b>Mensagens de commit melhores, sem tirar o controle do desenvolvedor.</b>  
+<div align="center">
 
-  CLI em TypeScript que analisa o diff em staging e usa IA para sugerir mensagens no padrão Conventional Commits.
-</p> <p align="center">
-  <img src="https://img.shields.io/badge/TypeScript-3178C6?style=flat&logo=typescript&logoColor=white" alt="TypeScript" />
-  <img src="https://img.shields.io/badge/Node.js-339933?style=flat&logo=nodedotjs&logoColor=white" alt="Node.js" />
-  <img src="https://img.shields.io/badge/Anthropic-191919?style=flat&logo=anthropic&logoColor=white" alt="Anthropic" />
-  <img src="https://img.shields.io/badge/OpenAI-412991?style=flat&logo=openai&logoColor=white" alt="OpenAI" />
-  <img src="https://img.shields.io/badge/License-MIT-green?style=flat" alt="MIT License" />
-</p> <p align="center">
-  <a href="https://github.com/enthonydev/OUR-COMMIT">Repositório</a> ·
-  <a href="https://www.conventionalcommits.org/">Conventional Commits</a>
-</p>
+# OUR COMMIT
 
+**Mensagens de commit melhores, sem tirar o controle do desenvolvedor.**
 
+CLI em TypeScript que analisa o diff em staging e usa IA para sugerir mensagens no padrão Conventional Commits.
 
+![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=flat&logo=typescript&logoColor=white)
+![Node.js](https://img.shields.io/badge/Node.js-339933?style=flat&logo=nodedotjs&logoColor=white)
+![Anthropic](https://img.shields.io/badge/Anthropic-191919?style=flat&logo=anthropic&logoColor=white)
+![OpenAI](https://img.shields.io/badge/OpenAI-412991?style=flat&logo=openai&logoColor=white)
+![License](https://img.shields.io/badge/License-MIT-green?style=flat)
 
-Sobre
+[Repositório](https://github.com/enthonydev/OUR-COMMIT) · [Conventional Commits](https://www.conventionalcommits.org/)
 
-Escrever boas mensagens de commit de forma consistente é uma tarefa repetitiva. O OUR COMMIT automatiza essa parte sem executar commits inesperados: por padrão, ele apenas mostra a sugestão. A aplicação da mensagem só acontece quando a flag --apply é informada explicitamente.
+</div>
 
-O CLI trabalha apenas com as alterações que já estão em staging. Assim, a mensagem gerada representa exatamente o conteúdo que está preparado para entrar no commit.
+---
 
-Como funciona
+## Sobre
 
-Plain Text
+Escrever boas mensagens de commit de forma consistente é uma tarefa repetitiva. O **OUR COMMIT** automatiza essa parte sem tirar o controle do desenvolvedor.
 
+A ferramenta analisa somente as alterações que já estão em **staging** e gera uma sugestão de mensagem baseada exatamente no conteúdo preparado para o próximo commit.
 
+Por padrão, o OUR COMMIT **apenas exibe a sugestão**. O commit só é criado quando a flag `--apply` é informada explicitamente.
+
+---
+
+## Como funciona
+
+```text
 git add <arquivos>
-      │
-      ▼
-git diff --staged  ──►  prompt estruturado  ──►  Claude ou OpenAI  ──►  mensagem sugerida
-                                                                            │
-                                                              (opcional ) git commit -m
+        │
+        ▼
+git diff --staged
+        │
+        ▼
+Prompt estruturado
+        │
+        ▼
+Claude ou OpenAI
+        │
+        ▼
+Mensagem de commit
+        │
+        └── --apply ──► git commit
+```
 
+O fluxo é dividido em quatro partes:
 
+1. `gitDiff.ts` lê o `git diff --staged` e identifica os arquivos preparados.
+2. `promptBuilder.ts` monta o prompt seguindo as regras do Conventional Commits.
+3. `llmProvider.ts` abstrai a comunicação com Anthropic e OpenAI.
+4. `index.ts` controla o CLI, valida o ambiente, gera a sugestão e, opcionalmente, cria o commit.
 
-1.
-gitDiff.ts lê o git diff --staged e lista os arquivos preparados.
+---
 
-2.
-promptBuilder.ts monta o prompt com as regras do Conventional Commits e injeta o diff.
+## Stack
 
-3.
-llmProvider.ts abstrai a chamada HTTP para a Anthropic ou a OpenAI.
+- **TypeScript**
+- **Node.js**
+- **Git**
+- **dotenv**
+- **Anthropic API**
+- **OpenAI API**
 
-4.
-index.ts interpreta as opções, valida o staging e a chave de API, gera a sugestão e, com --apply, cria o commit.
+---
 
-Stack
+## Instalação
 
-<p>
-<img src="https://img.shields.io/badge/TypeScript-3178C6?style=flat&logo=typescript&logoColor=white" alt="TypeScript" />
-  <img src="https://img.shields.io/badge/Node.js-339933?style=flat&logo=nodedotjs&logoColor=white" alt="Node.js" />
-  <img src="https://img.shields.io/badge/dotenv-ECD53F?style=flat&logoColor=black" alt="dotenv" />
-  <img src="https://img.shields.io/badge/Git-F05032?style=flat&logo=git&logoColor=white" alt="Git" />
-  <img src="https://img.shields.io/badge/Anthropic_API-191919?style=flat&logo=anthropic&logoColor=white" alt="Anthropic API" />
-  <img src="https://img.shields.io/badge/OpenAI_API-412991?style=flat&logo=openai&logoColor=white" alt="OpenAI API" />
-</p>
+Clone o repositório:
 
-Instalação
-
-Bash
-
-
+```bash
 git clone https://github.com/enthonydev/OUR-COMMIT.git
 cd OUR-COMMIT
+```
+
+Instale as dependências:
+
+```bash
 npm install
+```
+
+Crie seu arquivo de configuração:
+
+### Linux / macOS
+
+```bash
 cp .env.example .env
+```
 
+### Windows
 
+```powershell
+copy .env.example .env
+```
 
-O diretório dist/ é gerado durante o build e não é versionado. Depois de instalar as dependências, compile o código TypeScript:
+Compile o projeto:
 
-Bash
-
-
+```bash
 npm run build
+```
 
+O diretório `dist/` é gerado durante o build e não é versionado.
 
+---
 
-A versão compilada do CLI pode ser executada com:
+## Configuração
 
-Bash
+Abra o arquivo `.env` e configure o provedor que deseja utilizar:
 
-
-npm start
-
-
-
-O comando npm start executa dist/index.js. Sempre que alterar arquivos em src/, rode npm run build novamente antes de usar npm start.
-
-Configuração
-
-Edite o arquivo .env e preencha uma das chaves abaixo:
-
-Plain Text
-
-
+```env
 # Provedor padrão: anthropic ou openai
 OUR_COMMIT_PROVIDER=anthropic
 
-# Escolha uma das chaves de API
+# Preencha apenas a chave do provedor que deseja utilizar
 ANTHROPIC_API_KEY=
 OPENAI_API_KEY=
+```
 
+Você precisa configurar **apenas uma chave de API** para utilizar o respectivo provedor.
 
+O provedor padrão é definido por `OUR_COMMIT_PROVIDER`, mas também pode ser escolhido diretamente pelas flags `--anthropic` e `--openai`.
 
-O provedor padrão é definido por OUR_COMMIT_PROVIDER. As flags --anthropic e --openai permitem escolher o provedor diretamente durante a execução.
+> Nunca versione seu arquivo `.env`. Ele já está incluído no `.gitignore`.
 
-Uso
+---
 
-Primeiro, adicione as alterações que deseja analisar:
+## Uso
 
-Bash
+Primeiro, adicione ao staging as alterações que deseja analisar:
 
-
+```bash
 git add src/algumArquivo.ts
+```
 
+Ou adicione todas as alterações:
 
+```bash
+git add .
+```
 
-Com o projeto compilado, execute:
+Depois, execute o OUR COMMIT:
 
-Bash
+```bash
+npm start
+```
 
+O CLI analisa o staging e exibe uma mensagem sugerida:
 
-npm start                    # mostra a mensagem sugerida
-npm start -- --apply         # gera a mensagem e cria o commit
-npm start -- --openai        # usa OpenAI em vez de Claude
-npm start -- --en            # gera a mensagem em inglês
+```text
+── Mensagem sugerida ──────────────────────────
+feat: adiciona suporte à autenticação do usuário
+────────────────────────────────────────────────
+```
 
+Nenhum commit é criado automaticamente.
 
+### Criar o commit
 
-Durante o desenvolvimento, também é possível executar o código TypeScript diretamente:
+Para aplicar a mensagem sugerida diretamente:
 
-Bash
+```bash
+npm start -- --apply
+```
 
+### Usar OpenAI
 
+```bash
+npm start -- --openai
+```
+
+### Usar Anthropic
+
+```bash
+npm start -- --anthropic
+```
+
+### Gerar mensagem em inglês
+
+```bash
+npm start -- --en
+```
+
+As opções também podem ser combinadas:
+
+```bash
+npm start -- --openai --en --apply
+```
+
+---
+
+## Durante o desenvolvimento
+
+O projeto também pode ser executado diretamente pelo TypeScript:
+
+```bash
 npm run dev
+```
 
+Sempre que alterar arquivos em `src/`, execute novamente:
 
+```bash
+npm run build
+```
 
-Se não houver alterações em staging, o CLI encerra sem chamar a API e informa que é necessário executar git add antes.
+antes de utilizar a versão compilada através de `npm start`.
 
-Regras da mensagem gerada
+---
 
-•
-Segue o padrão .
+## CLI global
 
-•
-Usa tipos como feat, fix, refactor, docs, test, chore, style e perf.
+O pacote já define o executável:
 
-•
-Mantém a primeira linha com no máximo 72 caracteres.
+```text
+our-commit
+```
 
-•
-Usa o modo imperativo.
+Depois de compilar o projeto, durante o desenvolvimento você pode disponibilizá-lo globalmente com:
 
-•
-Responde em português do Brasil por padrão.
+```bash
+npm link
+```
 
-•
-Pode responder em inglês com --en.
+Assim, dentro de qualquer repositório Git, basta executar:
 
-•
-Não inventa funcionalidade que não esteja presente no diff.
+```bash
+our-commit
+```
 
-•
-Trunca diffs maiores que 12.000 caracteres e avisa sobre o truncamento.
+Ou:
 
-Estrutura do projeto
+```bash
+our-commit --apply
+```
 
-Plain Text
+Para remover o link global posteriormente:
 
+```bash
+npm unlink -g our-commit
+```
 
+---
+
+## Opções
+
+| Opção | Descrição |
+|---|---|
+| `--apply` | Cria o commit usando a mensagem gerada |
+| `--openai` | Utiliza a OpenAI como provedor |
+| `--anthropic` | Utiliza a Anthropic como provedor |
+| `--en` | Gera a mensagem em inglês |
+
+Sem nenhuma flag, o CLI utiliza o provedor configurado em `OUR_COMMIT_PROVIDER` e gera a mensagem em português.
+
+---
+
+## Conventional Commits
+
+As mensagens seguem o padrão:
+
+```text
+tipo: descrição
+```
+
+Exemplos:
+
+```text
+feat: adiciona autenticação de usuário
+fix: corrige validação do formulário
+refactor: simplifica processamento do diff
+docs: atualiza instruções de instalação
+```
+
+Os tipos permitidos atualmente são:
+
+| Tipo | Uso |
+|---|---|
+| `feat` | Nova funcionalidade |
+| `fix` | Correção |
+| `refactor` | Refatoração sem alterar comportamento |
+| `docs` | Documentação |
+| `test` | Testes |
+| `chore` | Manutenção e tarefas auxiliares |
+| `style` | Alterações de estilo sem mudança de lógica |
+| `perf` | Melhorias de performance |
+
+Além disso, o prompt orienta o modelo a:
+
+- manter a primeira linha com no máximo 72 caracteres;
+- utilizar o modo imperativo;
+- representar somente alterações presentes no diff;
+- priorizar a mudança principal quando houver alterações não relacionadas;
+- responder somente com a mensagem de commit.
+
+---
+
+## Diffs grandes
+
+Para evitar o envio desnecessário de grandes volumes de conteúdo para o provedor, o OUR COMMIT limita o diff enviado ao modelo a **12.000 caracteres**.
+
+Quando esse limite é ultrapassado, o conteúdo é truncado e sinalizado no próprio contexto enviado ao modelo.
+
+Os nomes dos arquivos em staging continuam sendo enviados como contexto adicional.
+
+Para alterações muito grandes ou não relacionadas, prefira dividir o trabalho em commits menores.
+
+---
+
+## Estrutura do projeto
+
+```text
 .
 ├── src/
-│   ├── gitDiff.ts        # leitura do diff em staging
-│   ├── index.ts          # entrada e orquestração do CLI
-│   ├── llmProvider.ts    # integração com Anthropic e OpenAI
-│   └── promptBuilder.ts   # construção do prompt
-├── .env.example          # modelo de configuração sem secrets
-├── package.json          # scripts e configuração do pacote
-├── package-lock.json     # versões fixadas das dependências
-└── tsconfig.json         # configuração do TypeScript
+│   ├── gitDiff.ts
+│   ├── index.ts
+│   ├── llmProvider.ts
+│   └── promptBuilder.ts
+│
+├── .env.example
+├── .gitignore
+├── package.json
+├── package-lock.json
+├── tsconfig.json
+└── README.md
+```
 
+### `gitDiff.ts`
 
+Responsável por ler o diff e os arquivos presentes no staging.
 
-Decisões técnicas
+### `promptBuilder.ts`
 
-•
-TypeScript com execSync: usa o próprio binário git sem adicionar uma biblioteca específica para operações simples de diff e commit.
+Constrói as instruções enviadas ao modelo e define as regras das mensagens geradas.
 
-•
-Provider abstraído: mantém o restante do programa independente da API usada para gerar texto.
+### `llmProvider.ts`
 
-•
-Diff limitado a 12.000 caracteres: evita estourar o contexto do modelo e reduz o custo de diffs excessivamente grandes.
+Centraliza a comunicação com os provedores Anthropic e OpenAI.
 
-•
-Aplicação explícita: o CLI apenas sugere a mensagem por padrão; o commit só é criado com --apply.
+### `index.ts`
 
-Limitações conhecidas
+Entrada principal do CLI. Processa argumentos, valida configurações e coordena todo o fluxo.
 
-•
-Não analisa o histórico de commits anteriores para manter consistência de estilo.
+---
 
-•
-Diffs binários, como imagens, não geram contexto útil para o modelo.
+## Decisões técnicas
 
-•
-O projeto ainda não possui testes automatizados.
+**TypeScript + Git nativo**
 
-Contribuição
+O projeto utiliza o próprio executável `git` através de `execSync`, evitando adicionar uma biblioteca específica para operações simples de diff e commit.
 
-1.
-Crie uma branch para sua alteração.
+**Provedores desacoplados**
 
-2.
-Instale as dependências com npm install.
+A comunicação com os modelos fica isolada em `llmProvider.ts`, permitindo que o restante da aplicação não dependa diretamente de uma API específica.
 
-3.
-Execute npm run build antes de abrir sua contribuição.
+**Aplicação explícita**
 
-4.
-Descreva claramente a alteração e inclua as validações executadas.
+A geração da mensagem e a criação do commit são ações separadas. O usuário mantém controle sobre quando uma mensagem será efetivamente aplicada.
 
-Referências
+**Limite de contexto**
 
-[1] Conventional Commits
-[2] Anthropic API
-[3] OpenAI API
-Licença
+Diffs extensos são truncados para reduzir o envio desnecessário de conteúdo e evitar requisições excessivamente grandes.
+
+---
+
+## Limitações conhecidas
+
+- Não analisa o histórico de commits anteriores para reproduzir o estilo do repositório.
+- Diffs binários, como imagens, não fornecem contexto textual útil.
+- Diffs acima de 12.000 caracteres são truncados.
+- O projeto ainda não possui testes automatizados.
+- O uso requer uma chave válida da Anthropic ou OpenAI.
+
+---
+
+## Scripts
+
+| Comando | Descrição |
+|---|---|
+| `npm run build` | Compila o TypeScript para `dist/` |
+| `npm start` | Executa a versão compilada |
+| `npm run dev` | Executa diretamente pelo TypeScript com `tsx` |
+
+---
+
+## Contribuição
+
+Contribuições são bem-vindas.
+
+1. Faça um fork do projeto.
+2. Crie uma branch para sua alteração.
+3. Instale as dependências com `npm install`.
+4. Implemente a alteração.
+5. Execute `npm run build`.
+6. Abra um Pull Request descrevendo o que foi alterado e como foi validado.
+
+---
+
+## Referências
+
+- [Conventional Commits](https://www.conventionalcommits.org/)
+- [Anthropic API](https://docs.anthropic.com/)
+- [OpenAI API](https://platform.openai.com/docs/)
+- [TypeScript](https://www.typescriptlang.org/)
+- [Node.js](https://nodejs.org/)
+
+---
+
+## Licença
 
 Distribuído sob a licença MIT.
 
-<p align="center">
-Desenvolvido por <a href="https://github.com/enthonydev">Enthony Silva</a>
-</p>
+---
 
+<div align="center">
+
+Desenvolvido por [Enthony Silva](https://github.com/enthonydev)
+
+**OUR COMMIT**
+
+*Seu código muda. Sua mensagem explica.*
+
+</div>
