@@ -1,12 +1,12 @@
 #!/usr/bin/env node
 import "dotenv/config";
-import { execSync } from "node:child_process";
+import { execFileSync } from "node:child_process";
 import { getStagedDiff, getStagedFileNames, truncateDiff } from "./gitDiff.js";
 import { buildCommitPrompt } from "./promptBuilder.js";
 import { generateText, type Provider } from "./llmProvider.js";
 
 interface CliOptions {
-  provider: Provider;
+  provider: Provider | "local";
   language: "pt" | "en";
   apply: boolean;
 }
@@ -19,10 +19,16 @@ function parseArgs(argv: string[]): CliOptions {
   };
 
   for (const arg of argv) {
-    if (arg === "--openai") options.provider = "openai";
+    if (arg === "--local") options.provider = "local";
+    else if (arg === "--openai") options.provider = "openai";
     if (arg === "--anthropic") options.provider = "anthropic";
     if (arg === "--en") options.language = "en";
     if (arg === "--apply") options.apply = true;
+    if (arg === "--help" || arg === "-h") {
+      console.log("Uso: our-commit [--local | --openai | --anthropic] [--en] [--apply]");
+      process.exit(0);
+    }
+    if (arg.startsWith("-") && !["--local","--openai","--anthropic","--en","--apply","--help","-h"].includes(arg)) throw new Error(`Opção desconhecida: ${arg}`);
   }
 
   return options;
@@ -45,6 +51,17 @@ function getApiKey(provider: Provider): string {
   return key;
 }
 
+function suggestLocalMessage(files: string[], language: "pt" | "en"): string {
+  const paths = files.map((line) => line.replace(/^[A-Z?]+\\s+/, ""));
+  const docsOnly = paths.every((path) => path.endsWith(".md") || path.startsWith("docs/"));
+  const testsOnly = paths.every((path) => path.includes("test") || path.includes("spec"));
+  const type = docsOnly ? "docs" : testsOnly ? "test" : "chore";
+  const description = language === "en"
+    ? docsOnly ? "update documentation" : testsOnly ? "update tests" : "update staged files"
+    : docsOnly ? "atualiza documentação" : testsOnly ? "atualiza testes" : "atualiza arquivos preparados";
+  return `${type}: ${description}`;
+}
+
 async function main() {
   const options = parseArgs(process.argv.slice(2));
 
@@ -59,22 +76,20 @@ async function main() {
   const fileNames = getStagedFileNames();
   const truncated = truncateDiff(diff);
   const prompt = buildCommitPrompt(truncated, fileNames, options.language);
-  const apiKey = getApiKey(options.provider);
+  const apiKey = options.provider === "local" ? "" : getApiKey(options.provider);
 
   console.log(`\n🤖 Gerando mensagem de commit com ${options.provider}...\n`);
 
-  const message = await generateText({
-    provider: options.provider,
-    apiKey,
-    prompt,
-  });
+  const message = options.provider === "local"
+    ? suggestLocalMessage(fileNames, options.language)
+    : await generateText({ provider: options.provider, apiKey, prompt });
 
   console.log("── Mensagem sugerida ──────────────────────────");
   console.log(message);
   console.log("────────────────────────────────────────────────\n");
 
   if (options.apply) {
-    execSync(`git commit -m ${JSON.stringify(message)}`, { stdio: "inherit" });
+    execFileSync("git", ["commit", "-m", message], { stdio: "inherit" });
     console.log("✅ Commit criado.\n");
   } else {
     console.log(
