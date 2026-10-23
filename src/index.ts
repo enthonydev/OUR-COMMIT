@@ -52,7 +52,7 @@ function getApiKey(provider: Provider): string {
 }
 
 function suggestLocalMessage(files: string[], language: "pt" | "en"): string {
-  const paths = files.map((line) => line.replace(/^[A-Z?]+\\s+/, ""));
+  const paths = files.map((line) => line.replace(/^[A-Z?]+\s+/, ""));
   const docsOnly = paths.every((path) => path.endsWith(".md") || path.startsWith("docs/"));
   const testsOnly = paths.every((path) => path.includes("test") || path.includes("spec"));
   const type = docsOnly ? "docs" : testsOnly ? "test" : "chore";
